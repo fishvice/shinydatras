@@ -1,0 +1,190 @@
+---
+title: "DATRAS"
+output:
+  flexdashboard::flex_dashboard:
+runtime: shiny
+---
+
+
+```{r eval = FALSE}
+# TODO: Check why numbers in length plot here are different from numbers in
+#       fyrirkongenekkiprest
+```
+
+```{r}
+library(tidyverse)
+library(shinydatras)
+#d <- read_rds("ftp://ftp.hafro.is/pub/data/rds/nsibts-q3.rds")
+d <- read_rds("data-raw/datras_cpue.rds")
+d$rbyl <- d$rbyl |> mutate(sid = latin)
+d$rbl <- d$rbl |> mutate(sid = latin)
+d$boot <- d$boot |> mutate(sid = latin)
+d$rbys <- d$rbys |> mutate(sid = latin)
+d$glyph <- d$glyph |> mutate(sid = latin)
+#fix this upstream?
+d$rbys <-
+  d$rbys |>
+  group_by(latin) |>
+  mutate(N = ifelse(N > quantile(N, 0.9999), quantile(N, 0.9999), N),
+         B = ifelse(B > quantile(B, 0.9999), quantile(B, 0.9999), B)) |>
+  ungroup()
+d$prob <- d$prob |> mutate(sid = latin)
+
+
+surveys <- d$boot$survey |> unique()
+names(surveys) <- surveys
+species <- d$species
+now.year <- max(d$rbyl$year)
+```
+
+
+Sidebar {.sidebar data-width=175}
+=====================================
+
+```{r}
+selectInput(inputId = "Survey", label = "Survey:",
+            choices = surveys, selected = "NS-IBTS_3")
+
+selectInput(inputId = "Species", label = "Species:",
+            choices = species, selected = "Gadus morhua")
+
+
+radioButtons(inputId = "Type", label = "Choice:", 
+             choices = list("Numbers", "Mass"),
+             selected = list("Numbers"))
+```
+
+Trial stuff - draft explanation (in Icelandic) [here](http://www.hafro.is/~einarhj/skyringar.html).
+
+SOURCE: ICES Database on Trawl Surveys (DATRAS), 2023, ICES, Copenhagen, Denmark. [https://datras.ices.dk](https://datras.ices.dk)
+
+
+
+Time
+=====================================  
+
+Column {data-width=600}
+-------------------------------------
+
+### Catch by length
+
+
+```{r}
+renderPlot({
+  if(input$Type == "Numbers") 
+  {
+    gg_length(d$rbl, d$rbyl, input$Survey, input$Species, n, lab = "Mean numbers per tow") + labs(caption = "What should be put here?")
+  } else {
+    gg_length(d$rbl, d$rbyl, input$Survey, input$Species, b, lab = "Mean kg per tow") + labs(caption = "What should be put here?")
+  }
+})
+```
+
+
+Column {data-width=400}
+-------------------------------------
+
+### Mean catch and confidence intervals
+
+
+```{r}
+renderPlot({
+  if(input$Type == "Numbers") 
+  {
+    gg_boot(d$boot |> filter(var == "N"), input$Survey, input$Species, ylab = "Numbers per hour") + labs(caption = "What should be put here?")
+  } else {
+    gg_boot(d$boot |> filter(var == "B"), input$Survey, input$Species, ylab = "Kg per hour") + labs(caption = "What should be put here?") 
+  }
+})
+```
+
+### Catch in last data year
+
+```{r}
+renderPlot({
+  if(input$Type == "Numbers") {
+    gg_bubble1(d$rbys, input$Survey, input$Species, N, cl = d$cl) + theme(legend.position = "none") + labs(caption = "What should be put here?")
+  } else {
+    gg_bubble1(d$rbys, input$Survey, input$Species, B, lab = "Catch [kg]", cl = d$cl) + theme(legend.position = "none") + labs(caption = "What should be put here?")
+  }
+})
+```
+
+Space
+=====================================
+
+Column {.tabset}
+-------------------------------------
+
+### Catch per tow
+
+```{r}
+renderPlot({
+  if(input$Type == "Numbers") {
+    gg_bubble(d$rbys, input$Survey, input$Species, N, lab = "Numbers", cl = d$cl) + labs(caption = "What should be put here?")
+  } else {
+    gg_bubble(d$rbys, input$Survey, input$Species, B, lab = "Catch [kg]", cl = d$cl) + labs(caption = "What should be put here?")
+  }
+})
+```
+
+### Space time plot
+
+```{r}
+renderPlot({
+  if(input$Type == "Numbers") {
+    d$glyph |> rename(Y = N) |> gg_glyph(input$Survey, input$Species, now.year) + coord_quickmap(xlim = range(d$rbys$lon), ylim = range(d$rbys$lat)) + labs(caption = "What should be put here?")
+  } else {
+    d$glyph |> rename(Y = B) |> gg_glyph(input$Survey, input$Species, now.year) + coord_quickmap(xlim = range(d$rbys$lon), ylim = range(d$rbys$lat)) + labs(caption = "What should be put here?")
+  }
+})
+```
+
+### Probility of capture
+
+```{r}
+renderPlot({
+  gg_pcapture(d$prob, SUR = input$Survey, SID = input$Species, d$cl)
+  
+})
+```
+
+About the doodle
+===================================== 
+
+Column {.tabset}
+-------------------------------------
+
+### The data source
+
+***
+
+Something nice about the DATRAS
+
+- ...
+
+- ...
+
+- ...
+
+- ...
+
+### The time panel
+
+***
+
+Here possibly a snapshot of an illustrative species, explaining how to read the graph
+
+### The space panel
+
+
+***
+
+Here possibly a snapshot of an illustrative species, explaining how to read the graph
+
+### Method
+
+
+***
+
+Very brief points on methods with then link to more detailed documentation
