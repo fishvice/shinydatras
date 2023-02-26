@@ -276,12 +276,17 @@ glyph <-
   summarise(N = mean(N),
             B = mean(B),
             .groups = "drop")
-glyph <-
-  expand_grid(survey = unique(glyph$survey),
-              year = (year.min - 1):(year.max + 1),
-              sq = unique(glyph$sq),
-              latin = unique(glyph$latin)) |>
-  left_join(glyph) |>
+
+# Need to do each survey separately
+glyph1 <-
+  glyph |>
+  filter(survey == "NS-IBTS_3")
+glyph1 <-
+  expand_grid(survey = unique(glyph1$survey),
+              year = unique(glyph1$year),
+              sq = unique(glyph1$sq),
+              latin = unique(glyph1$latin)) |>
+  left_join(glyph1) |>
   mutate(N = replace_na(N, 0),
          B = replace_na(B, 0)) |>
   mutate(lon = geo::ir2d(sq)$lon,
@@ -290,6 +295,29 @@ glyph <-
   mutate(N = ifelse(N > quantile(N, 0.975), quantile(N, 0.975), N),
          B = ifelse(B > quantile(B, 0.975), quantile(B, 0.975), B)) |>
   ungroup()
+
+glyph2 <-
+  glyph |>
+  filter(survey != "NS-IBTS_3")
+glyph2 <-
+  expand_grid(survey = unique(glyph2$survey),
+              year = unique(glyph2$year),
+              sq = unique(glyph2$sq),
+              latin = unique(glyph2$latin)) |>
+  left_join(glyph2) |>
+  mutate(N = replace_na(N, 0),
+         B = replace_na(B, 0)) |>
+  mutate(lon = geo::ir2d(sq)$lon,
+         lat = geo::ir2d(sq)$lat) |>
+  group_by(survey, year, latin) |>
+  mutate(N = ifelse(N > quantile(N, 0.975), quantile(N, 0.975), N),
+         B = ifelse(B > quantile(B, 0.975), quantile(B, 0.975), B)) |>
+  ungroup()
+
+glyph <-
+  bind_rows(glyph1, glyph2)
+
+
 # Throw out variables that are not used downstream to speed up the shiny loading
 glyph <-
   glyph |>
