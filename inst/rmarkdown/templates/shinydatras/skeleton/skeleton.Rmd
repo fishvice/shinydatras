@@ -13,8 +13,8 @@ runtime: shiny
 ```{r}
 library(tidyverse)
 library(shinydatras)
-#d <- read_rds("ftp://ftp.hafro.is/pub/data/rds/nsibts-q3.rds")
-d <- read_rds("data-raw/datras_cpue.rds")
+# d <- read_rds("data-raw/datras_cpue.rds")
+d <- read_rds("ftp://ftp.hafro.is/pub/data/rds/datras_cpue.rd")
 d$rbyl <- d$rbyl |> mutate(sid = latin)
 d$rbl <- d$rbl |> mutate(sid = latin)
 d$boot <- d$boot |> mutate(sid = latin)
