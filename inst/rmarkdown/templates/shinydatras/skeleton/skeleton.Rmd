@@ -5,7 +5,6 @@ output:
 runtime: shiny
 ---
 
-
 ```{r eval = FALSE}
 # TODO: Check why numbers in length plot here are different from numbers in
 #       fyrirkongenekkiprest
