@@ -328,16 +328,19 @@ glyph <-
 
 prob <-
   rbys |>
-  mutate(lon = gisland::grade(lon, 1),
-         lat = gisland::grade(lat, 0.5)) |>
-  group_by(survey, latin, lon, lat) |>
+  mutate(sq = geo::d2ir(lat, lon)) |>
+  group_by(survey, latin, sq) |>
   summarise(n = n(),
             n.pos = sum(N > 0),
             p = n.pos / n * 100,
             .groups = "drop") |>
   mutate(p = cut(p, breaks = c(0, 1, seq(10, 100, by = 10)),
                  include.lowest = FALSE)) |>
-  filter(!is.na(p))
+  filter(!is.na(p)) |>
+  mutate(lon = geo::ir2d(sq)$lon,
+         lat = geo::ir2d(sq)$lat) |>
+  select(-sq)
+
 
 
 
