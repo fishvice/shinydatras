@@ -8,6 +8,8 @@
 
 The goal of shinydatras is to make DATRAS data shine
 
+Check out [demo](https://shiny.hafogvatn.is/datras)
+
 ## Installation
 
 You can install the development version of shinydatras from
@@ -17,3 +19,8 @@ You can install the development version of shinydatras from
 # install.packages("devtools")
 devtools::install_github("fishvice/shinydatras")
 ```
+
+In RStudio do: \* New File -\> R Markdown… -\> From Template and select
+“datras dashboard” \* Save it and push “Run Document”
+
+Pending: Instruction how to set-up your own favorite DATRAS survey
