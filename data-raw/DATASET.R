@@ -19,12 +19,17 @@ if(FROM_RAW) {
     filter(year >= 2000, quarter == 3) |>
     mutate(survey = paste0(survey, "_", quarter),
            year = as.integer(year))
-  fr <-
-    read_rds(paste0(pth, "fr-cgfs_cpue.rds")) |>
+  #fr <-
+  #  read_rds(paste0(pth, "fr-cgfs_cpue.rds")) |>
+  #  filter(year >= 2000, quarter == 4) |>
+  #  mutate(survey = paste0(survey, "_", quarter),
+  #         year = as.integer(year))
+  ie <-
+    read_rds("~/stasi/datras/data-raw/cpue_tidydatras/ie-igfs_cpue.rds") |>
     filter(year >= 2000, quarter == 4) |>
     mutate(survey = paste0(survey, "_", quarter),
            year = as.integer(year))
-  res <- bind_rows(ns, fr)
+  res <- bind_rows(ns, ie)
 }
 
 ## Via icesDatras::getCPUELength -----------------------------------------------
@@ -173,7 +178,7 @@ rbyl <-
   # fill in full cm lengths from min to max witin each species
   select(survey, year, latin, length) |> # step not really needed, just added for clarity
   group_by(survey, latin) |>
-  expand(year = full_seq(c(year.min, year.max), 1),
+  expand(year = full_seq(c(min(year), max(year)), 1),
          length = full_seq(length, 1)) |>
   # join back to get the N and B
   left_join(rbyl) |>

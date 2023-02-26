@@ -6,7 +6,7 @@
 <!-- badges: start -->
 <!-- badges: end -->
 
-The goal of shinydatras is to bring to live the DATRAS data
+The goal of shinydatras is to make DATRAS data shine
 
 ## Installation
 

@@ -4,7 +4,7 @@
 \alias{gg_glyph}
 \title{Title}
 \usage{
-gg_glyph(data, SUR, SID, now.year)
+gg_glyph(data, SUR, SID, now.year, cl)
 }
 \arguments{
 \item{now.year}{}

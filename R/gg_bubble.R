@@ -12,8 +12,10 @@
 #'
 gg_bubble <- function(data, SUR, SID, var, lab = "Fjöldi", cl) {
 
+
+
   NROW <-
-    ifelse(stringr::str_starts(SUR, "NS-IBTS"), 3, 4)
+    ifelse(SUR %in% c("NS-IBTS_3", "IE-IGFS_4"), 3, 4)
 
   data <-
     data %>%
@@ -63,9 +65,9 @@ gg_bubble1 <- function(data, SUR, SID, var, lab = "Fjöldi", cl) {
 
   data <-
     data %>%
-    dplyr::filter(year == max(year),
-                  survey == SUR,
-                  sid == SID)
+    dplyr::filter(survey == SUR,
+                  sid == SID) |>
+    filter(year == max(year))
 
   p <-
     ggplot() +

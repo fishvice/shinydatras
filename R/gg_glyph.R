@@ -8,14 +8,20 @@
 #' @return
 #' @export
 #'
-gg_glyph <- function(data, SUR, SID, now.year) {
+gg_glyph <- function(data, SUR, SID, now.year, cl) {
 
   # add a year before and after
+
+  data <-
+    data |>
+    dplyr::filter(survey == SUR)
+
+  max.year <- max(data$year)
 
 
   n.glyph <-
     data |>
-    dplyr::filter(survey == SUR, sid == SID) %>%
+    filter(sid == SID) |>
     glyphs(x_major = "lon",
            y_major = "lat",
            x_minor = "year",
@@ -24,15 +30,15 @@ gg_glyph <- function(data, SUR, SID, now.year) {
            height = 0.5)
 
   n.glyph %>%
-    dplyr::mutate(years = ifelse(between(year, 2000, 2021), "history", "current"),
+    dplyr::mutate(years = ifelse(between(year, 2000, (max.year - 1)), "history", "current"),
                   pos = ifelse(Y != 0, TRUE, FALSE),
                   base = lat - 0.25,
-                  gy = ifelse(Y == 0 & between(year, 2000, 2022), gy + 0.005, gy)) %>%
+                  gy = ifelse(Y == 0 & between(year, 2000, max.year), gy + 0.005, gy)) %>%
     ggplot2::ggplot() +
     ggplot2::theme_minimal() +
     ggplot2::geom_linerange(ggplot2::aes(x = gx, ymin = base, ymax = gy,
                                          colour = years)) +
-    ggplot2::geom_polygon(data = d$cl, ggplot2::aes(lon, lat, group = group), fill = "grey", alpha = 0.7) +
+    ggplot2::geom_polygon(data = cl, ggplot2::aes(lon, lat, group = group), fill = "grey", alpha = 0.7) +
     scale_longitude_ices() +
     scale_latitude_ices() +
     ggplot2::scale_colour_manual(values = c("history" = "#377EB8", "current" = "#E41A1C")) +
@@ -40,7 +46,9 @@ gg_glyph <- function(data, SUR, SID, now.year) {
                    panel.grid.minor = ggplot2::element_line(size = 1),
                    axis.ticks = ggplot2::element_blank(),
                    legend.position = "none") +
-    labs(x = NULL, y = NULL)
+    labs(x = NULL, y = NULL) +
+    coord_quickmap(xlim = range(data$lon), ylim = range(data$lat))
+
 }
 
 glyphs <- function (data, x_major, x_minor, y_major, y_minor, polar = FALSE,

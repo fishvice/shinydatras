@@ -133,9 +133,15 @@ renderPlot({
 ```{r}
 renderPlot({
   if(input$Type == "Numbers") {
-    d$glyph |> rename(Y = N) |> gg_glyph(input$Survey, input$Species, now.year) + coord_quickmap(xlim = range(d$rbys$lon), ylim = range(d$rbys$lat)) + labs(caption = "What should be put here?")
+    d$glyph |> 
+      rename(Y = N) |> 
+      gg_glyph(input$Survey, input$Species, now.year, d$cl) + 
+      labs(caption = "What should be put here?")
   } else {
-    d$glyph |> rename(Y = B) |> gg_glyph(input$Survey, input$Species, now.year) + coord_quickmap(xlim = range(d$rbys$lon), ylim = range(d$rbys$lat)) + labs(caption = "What should be put here?")
+    d$glyph |> 
+      rename(Y = B) |> 
+      gg_glyph(input$Survey, input$Species, now.year, d$cl) + 
+      labs(caption = "What should be put here?")
   }
 })
 ```
