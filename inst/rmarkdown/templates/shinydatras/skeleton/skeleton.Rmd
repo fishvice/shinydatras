@@ -53,11 +53,9 @@ radioButtons(inputId = "Type", label = "Choice:",
              selected = list("Numbers"))
 ```
 
-Trial stuff - draft explanation (in Icelandic) [here](http://www.hafro.is/~einarhj/skyringar.html).
-
 SOURCE: ICES Database on Trawl Surveys (DATRAS), 2023, ICES, Copenhagen, Denmark. [https://datras.ices.dk](https://datras.ices.dk)
 
-
+Rudimentary user guide [here](https://heima.hafro.is/~einarhj/pkg/shinydatras/articles/user_guide.html).
 
 Time
 =====================================  
@@ -127,6 +125,17 @@ renderPlot({
 })
 ```
 
+
+### Probility of capture
+
+```{r}
+renderPlot({
+  gg_pcapture(d$prob, SUR = input$Survey, SID = input$Species, d$cl)
+  
+})
+```
+
+
 ### Space time plot
 
 ```{r}
@@ -145,51 +154,3 @@ renderPlot({
 })
 ```
 
-### Probility of capture
-
-```{r}
-renderPlot({
-  gg_pcapture(d$prob, SUR = input$Survey, SID = input$Species, d$cl)
-  
-})
-```
-
-About the doodle
-===================================== 
-
-Column {.tabset}
--------------------------------------
-
-### The data source
-
-***
-
-Something nice about the DATRAS
-
-- ...
-
-- ...
-
-- ...
-
-- ...
-
-### The time panel
-
-***
-
-Here possibly a snapshot of an illustrative species, explaining how to read the graph
-
-### The space panel
-
-
-***
-
-Here possibly a snapshot of an illustrative species, explaining how to read the graph
-
-### Method
-
-
-***
-
-Very brief points on methods with then link to more detailed documentation
