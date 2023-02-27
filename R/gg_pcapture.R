@@ -32,7 +32,6 @@ gg_pcapture <- function(data, SUR, SID, cl) {
     labs(fill = "Probability of\ncapture [%]") +
     ggplot2::theme(panel.grid.major = ggplot2::element_blank(),
                    panel.grid.minor = ggplot2::element_line(size = 1),
-                   axis.ticks = ggplot2::element_blank(),
-                   legend.position = "none") +
+                   axis.ticks = ggplot2::element_blank()) +
     labs(caption = "What should be put here?")
 }
