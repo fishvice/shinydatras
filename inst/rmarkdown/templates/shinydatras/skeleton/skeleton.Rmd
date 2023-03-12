@@ -70,7 +70,7 @@ Column {data-width=600}
 renderPlot({
   if(input$Type == "Numbers") 
   {
-    gg_length(d$rbl, d$rbyl, input$Survey, input$Species, n, lab = "Mean numbers per tow") + labs(caption = "What should be put here?")
+    gg_length(d$rbl, d$rbyl, input$Survey, input$Species, n, lab = "Mean numbers per tow") + labs(caption = "What should be put here XX?")
   } else {
     gg_length(d$rbl, d$rbyl, input$Survey, input$Species, b, lab = "Mean kg per tow") + labs(caption = "What should be put here?")
   }
