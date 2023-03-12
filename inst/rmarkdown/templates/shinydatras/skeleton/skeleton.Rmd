@@ -12,9 +12,7 @@ runtime: shiny
 
 ```{r}
 library(tidyverse)
-library(shinydatras)
-library(flexdashboard)
-# d <- read_rds("data-raw/datras_cpue.rds")
+library(tidydateras)
 d <- read_rds("ftp://ftp.hafro.is/pub/data/rds/datras_cpue.rds")
 d$rbyl <- d$rbyl |> mutate(sid = latin)
 d$rbl <- d$rbl |> mutate(sid = latin)
@@ -42,14 +40,14 @@ Sidebar {.sidebar data-width=175}
 =====================================
 
 ```{r}
+selectInput(inputId = "Survey", label = "Survey:",
+            choices = surveys, selected = "NS-IBTS_3")
 
-
-
-shiny::selectInput(inputId = "Species", label = "Species:",
+selectInput(inputId = "Species", label = "Species:",
             choices = species, selected = "Gadus morhua")
 
 
-shiny::radioButtons(inputId = "Type", label = "Choice:", 
+radioButtons(inputId = "Type", label = "Choice:", 
              choices = list("Numbers", "Mass"),
              selected = list("Numbers"))
 ```
@@ -57,6 +55,7 @@ shiny::radioButtons(inputId = "Type", label = "Choice:",
 SOURCE: ICES Database on Trawl Surveys (DATRAS), 2023, ICES, Copenhagen, Denmark. [https://datras.ices.dk](https://datras.ices.dk)
 
 Rudimentary user guide [here](https://heima.hafro.is/~einarhj/pkg/shinydatras/articles/user_guide.html).
+
 
 Time
 =====================================  
@@ -71,7 +70,7 @@ Column {data-width=600}
 renderPlot({
   if(input$Type == "Numbers") 
   {
-    gg_length(d$rbl, d$rbyl, input$Survey, input$Species, n, lab = "Mean numbers per tow") + labs(caption = "What should be put here XX?")
+    gg_length(d$rbl, d$rbyl, input$Survey, input$Species, n, lab = "Mean numbers per tow") + labs(caption = "What should be put here?")
   } else {
     gg_length(d$rbl, d$rbyl, input$Survey, input$Species, b, lab = "Mean kg per tow") + labs(caption = "What should be put here?")
   }
@@ -126,7 +125,6 @@ renderPlot({
 })
 ```
 
-
 ### Probility of capture
 
 ```{r}
@@ -135,7 +133,6 @@ renderPlot({
   
 })
 ```
-
 
 ### Space time plot
 
