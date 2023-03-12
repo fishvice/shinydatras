@@ -13,8 +13,9 @@ runtime: shiny
 ```{r}
 library(tidyverse)
 library(shinydatras)
+library(flexdashboard)
 # d <- read_rds("data-raw/datras_cpue.rds")
-d <- read_rds("ftp://ftp.hafro.is/pub/data/rds/datras_cpue.rd")
+d <- read_rds("ftp://ftp.hafro.is/pub/data/rds/datras_cpue.rds")
 d$rbyl <- d$rbyl |> mutate(sid = latin)
 d$rbl <- d$rbl |> mutate(sid = latin)
 d$boot <- d$boot |> mutate(sid = latin)
@@ -41,14 +42,14 @@ Sidebar {.sidebar data-width=175}
 =====================================
 
 ```{r}
-selectInput(inputId = "Survey", label = "Survey:",
-            choices = surveys, selected = "NS-IBTS_3")
 
-selectInput(inputId = "Species", label = "Species:",
+
+
+shiny::selectInput(inputId = "Species", label = "Species:",
             choices = species, selected = "Gadus morhua")
 
 
-radioButtons(inputId = "Type", label = "Choice:", 
+shiny::radioButtons(inputId = "Type", label = "Choice:", 
              choices = list("Numbers", "Mass"),
              selected = list("Numbers"))
 ```
